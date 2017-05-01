@@ -1,0 +1,24 @@
+group 'com.rarejava'
+version '0.0.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+apply from: 'gradle/dependencies.gradle'
+
+task createBuildInfo {
+    def info = file("$buildDir/info")
+    outputs.dir info
+    doLast {
+        info.mkdirs()
+        new File(info, "build-info.properties").write("$project.version")
+    }
+}
+
+apply from: 'gradle/application.gradle'
+
+sourceCompatibility = 1.8
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+

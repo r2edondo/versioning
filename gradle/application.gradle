@@ -1,0 +1,19 @@
+apply plugin: 'application'
+
+mainClassName = "com.rarejava.versioning.Main"
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from(createBuildInfo)
+        }
+    }
+}
