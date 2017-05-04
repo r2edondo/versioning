@@ -38,9 +38,9 @@ apply from: 'gradle/dependencies.gradle'
 
 release {
 //    versionStrategy RebuildVersionStrategy.INSTANCE
-    versionStrategy MINE
+    versionStrategy Strategies.SNAPSHOT
     versionStrategy Strategies.FINAL
-    defaultVersionStrategy = MINE
+    defaultVersionStrategy = Strategies.SNAPSHOT
 
 //   versionStrategy(new CustomVersionStrategy())
 
