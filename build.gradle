@@ -4,6 +4,26 @@ plugins {
 }
 
 
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+import org.ajoberstar.gradle.git.release.opinion.Strategies.PreRelease
+import org.ajoberstar.gradle.git.release.semver.PartialSemVerStrategy
+import org.ajoberstar.gradle.git.release.semver.SemVerStrategy
+import static org.ajoberstar.gradle.git.release.opinion.Strategies.DEFAULT
+import static org.ajoberstar.gradle.git.release.semver.StrategyUtil.closure
+
+final PartialSemVerStrategy BRANCH_NAME = closure { state -> state.copyWith(inferredBuildMetadata: state.currentBranch.getName()
+        .replaceAll('master','').replaceAll('/short-description','').replaceAll('/','.').replaceAll('-','')) }
+final SemVerStrategy MINE = DEFAULT.copyWith(
+        name: 'branch',
+        stages: ['SNAPSHOT'] as SortedSet,
+        allowDirtyRepo: true,
+        preReleaseStrategy: PreRelease.STAGE_FIXED,
+        buildMetadataStrategy: BRANCH_NAME,
+        createTag: false
+)
+
+
+
 task dumpVersion() {
     doLast {
         println project.version
@@ -16,18 +36,15 @@ apply plugin: 'java'
 
 apply from: 'gradle/dependencies.gradle'
 
-
-import org.ajoberstar.gradle.git.release.semver.RebuildVersionStrategy
-import org.ajoberstar.gradle.git.release.opinion.Strategies
-
 release {
-    versionStrategy RebuildVersionStrategy.INSTANCE
-    versionStrategy Strategies.SNAPSHOT
+//    versionStrategy RebuildVersionStrategy.INSTANCE
+    versionStrategy MINE
     versionStrategy Strategies.FINAL
-    defaultVersionStrategy = Strategies.SNAPSHOT
+    defaultVersionStrategy = MINE
+
+//   versionStrategy(new CustomVersionStrategy())
+
 }
-
-
 
 task createBuildInfo {
     def info = file("$buildDir/info")
@@ -45,3 +62,5 @@ sourceCompatibility = 1.8
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
 }
+
+tasks.release.dependsOn 'distTar'
