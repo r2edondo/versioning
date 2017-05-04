@@ -13,7 +13,7 @@ import static org.ajoberstar.gradle.git.release.semver.StrategyUtil.closure
 
 final PartialSemVerStrategy BRANCH_NAME = closure { state -> state.copyWith(inferredBuildMetadata: state.currentBranch.getName()
         .replaceAll('master','').replaceAll('/short-description','').replaceAll('/','.').replaceAll('-','')) }
-final SemVerStrategy MINE = DEFAULT.copyWith(
+final SemVerStrategy SNAPSHOT_BRANCH = DEFAULT.copyWith(
         name: 'branch',
         stages: ['SNAPSHOT'] as SortedSet,
         allowDirtyRepo: true,
@@ -38,9 +38,9 @@ apply from: 'gradle/dependencies.gradle'
 import org.ajoberstar.gradle.git.release.semver.RebuildVersionStrategy
 release {
     versionStrategy RebuildVersionStrategy.INSTANCE
-    versionStrategy Strategies.SNAPSHOT
+    versionStrategy SNAPSHOT_BRANCH
     versionStrategy Strategies.FINAL
-    defaultVersionStrategy = Strategies.SNAPSHOT
+    defaultVersionStrategy = SNAPSHOT_BRANCH
 
 //   versionStrategy(new CustomVersionStrategy())
 
