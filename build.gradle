@@ -1,9 +1,33 @@
+plugins {
+    id 'org.ajoberstar.grgit' version '1.7.1'
+    id 'org.ajoberstar.release-base' version '1.7.1'
+}
+
+
+task dumpVersion() {
+    doLast {
+        println project.version
+    }
+}
+
 group 'com.rarejava'
-version '0.0.0-SNAPSHOT'
 
 apply plugin: 'java'
 
 apply from: 'gradle/dependencies.gradle'
+
+
+import org.ajoberstar.gradle.git.release.semver.RebuildVersionStrategy
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+
+release {
+    versionStrategy RebuildVersionStrategy.INSTANCE
+    versionStrategy Strategies.SNAPSHOT
+    versionStrategy Strategies.FINAL
+    defaultVersionStrategy = Strategies.SNAPSHOT
+}
+
+
 
 task createBuildInfo {
     def info = file("$buildDir/info")
@@ -21,4 +45,3 @@ sourceCompatibility = 1.8
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
 }
-
