@@ -35,9 +35,9 @@ group 'com.rarejava'
 apply plugin: 'java'
 
 apply from: 'gradle/dependencies.gradle'
-
+import org.ajoberstar.gradle.git.release.semver.RebuildVersionStrategy
 release {
-//    versionStrategy RebuildVersionStrategy.INSTANCE
+    versionStrategy RebuildVersionStrategy.INSTANCE
     versionStrategy Strategies.SNAPSHOT
     versionStrategy Strategies.FINAL
     defaultVersionStrategy = Strategies.SNAPSHOT
